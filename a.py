@@ -1,10 +1,17 @@
 import random
 
-maze_w = 50
-maze_h = 50
 way = []
 possible_way = []
 wrong_way = []
+maze = []
+floor = []
+
+maze_w = 50
+maze_h = 100
+
+start_coord = (0, 0)
+end_coord = (maze_w - 1, maze_h - 1)
+
 
 def not_touch_way(pos, previous_pos):
     cx, cy = pos
@@ -20,24 +27,25 @@ def not_touch_way(pos, previous_pos):
     return True
 
 
-
-def create_way():
-    x, y = 0, 0
-    i = 0
-    way.append([0, 0])
+def create_way(maze_w, maze_h):
+    way.clear()
+    x, y = start_coord
+    way.append([x, y])
     while True:
-        if (x == maze_w - 2 and y == maze_h - 1) or (x == maze_w-1 and y == maze_h - 2):
-            x, y = maze_w - 1, maze_h - 1
+        x0, y0 = end_coord
+        if abs(x - x0) + abs(y - y0) <= 1:
+            x, y = end_coord
             way.append([x, y])
-        if x == maze_w - 1 and y == maze_h - 1:
             break
-        
+
         possible_way.clear()
         if x > 0 and [x - 1, y] not in wrong_way and not_touch_way((x - 1, y), [x, y]) and [x - 1, y] not in way:
             possible_way.append([x - 1, y])
-        if y < maze_h - 1 and [x, y + 1] not in wrong_way and not_touch_way((x, y + 1), [x, y]) and [x, y + 1] not in way:
+        if y < maze_h - 1 and [x, y + 1] not in wrong_way and not_touch_way((x, y + 1), [x, y]) and [x,
+                                                                                                     y + 1] not in way:
             possible_way.append([x, y + 1])
-        if x < maze_w - 1 and [x + 1, y] not in wrong_way and not_touch_way((x + 1, y), [x, y]) and [x + 1, y] not in way:
+        if x < maze_w - 1 and [x + 1, y] not in wrong_way and not_touch_way((x + 1, y), [x, y]) and [x + 1,
+                                                                                                     y] not in way:
             possible_way.append([x + 1, y])
         if y > 0 and [x, y - 1] not in wrong_way and not_touch_way((x, y - 1), [x, y]) and [x, y - 1] not in way:
             possible_way.append([x, y - 1])
@@ -52,16 +60,19 @@ def create_way():
             y = possible_way[num][1]
             way.append([x, y])
 
-        i += 1
+    return way
 
-create_way()
 
-for i in range(maze_w):
-    for j in range(maze_h):
-        if [i, j] in way:
-            print("#", end=" ")
-        else:
-            print(".", end=" ")
+def main():
+    maze_way = create_way(maze_w, maze_h)
+    for i in range(maze_w):
+        for j in range(maze_h):
+            if [i, j] in maze_way or random.randint(0, 5) < 4:
+                print('.', end=' ')
+            else:
+                print('#', end=' ')
 
-    print()
+        print()
 
+
+main()
